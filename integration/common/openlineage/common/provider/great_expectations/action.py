@@ -397,7 +397,11 @@ class OpenLineageValidationAction(ValidationAction):
                 datasource_url = engine.connection_string
             else:
                 datasource_url = engine.url.render_as_string(hide_password=False)
-                schema = "{}.{}".format(engine.url.database, schema)
+                db = engine.url.database.split("/")
+                if len(db) == 2:
+                    schema = "{}.{}".format(*db)
+                elif len(db) == 1 and db[0] != schema:
+                    schema = "{}.{}".format(db[0], schema)
             datasource_url = fix_snowflake_sqlalchemy_uri(datasource_url)
 
         # bug in sql parser doesn't strip ` character from bigquery tables
