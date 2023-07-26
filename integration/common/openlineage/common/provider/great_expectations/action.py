@@ -402,7 +402,7 @@ class OpenLineageValidationAction(ValidationAction):
         # bug in sql parser doesn't strip ` character from bigquery tables
         if table_name.endswith("`") or table_name.startswith("`"):
             table_name = table_name.replace("`", "")
-        if engine.dialect.name.lower() == "bigquery":
+        if engine.dialect.name.lower() in ("bigquery", "snowflake"):
             schema = "{}.{}".format(datasource_url.host, datasource_url.database)
 
         table = Table(table_name, meta, autoload_with=engine)
